@@ -1,0 +1,34 @@
+# ==========================================
+# 🛑 SEGREDOS E CREDENCIAIS (RISCO MÁXIMO)
+# ==========================================
+.env
+.secrets.toml
+
+# ==========================================
+# 📊 DADOS E GOVERNANÇA (LGPD)
+# ==========================================
+# Ignora a nossa pasta de logs e qualquer ata gerada localmente
+data/
+*.csv
+*.pdf
+
+# ==========================================
+# 🐍 AMBIENTES VIRTUAIS PYTHON
+# ==========================================
+venv/
+env/
+.venv/
+
+# ==========================================
+# ⚙️ CACHE E ARQUIVOS COMPILADOS PYTHON
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# ==========================================
+# 🖥️ SISTEMAS OPERACIONAIS
+# ==========================================
+.DS_Store
+Thumbs.db

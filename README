@@ -1,0 +1,102 @@
+```markdown
+# 🤝 Assistente de 1:1 e Feedback - Clear IT
+
+![Python](https://img.shields.io/badge/Python-3.9%2B-blue)
+![Streamlit](https://img.shields.io/badge/Streamlit-Framework-FF4B4B)
+![Gemini AI](https://img.shields.io/badge/Google_Gemini-Generative_AI-8E75B2)
+![Status](https://img.shields.io/badge/Status-MVP_em_Desenvolvimento-success)
+
+## 🎯 Visão Geral
+O **Assistente de Liderança Clear IT** é uma aplicação web focada em apoiar líderes na preparação, condução e documentação de reuniões de 1:1 e feedbacks. 
+
+Utilizando Inteligência Artificial (Google Gemini), o sistema cruza o perfil do líder com o perfil comportamental do liderado para gerar roteiros hiper-personalizados. Além disso, introduz um motor de gamificação para engajamento e resolve a dor da governança gerando Atas oficiais em PDF, garantindo **100% de conformidade com a LGPD**.
+
+---
+
+## ✨ Principais Funcionalidades
+
+* **🧠 Motor de Hiper-Personalização:** Roteiros adaptados para 3 perfis de liderança (Técnico, Transição, Engajado) e 4 perfis comportamentais de liderados.
+* **🎮 Gamificação de Feedback:** Geração automática de métricas de XP, Badges de reconhecimento e Missões baseadas em entregas reais.
+* **📄 Governança e LGPD (Gerador de Ata):** Criação de Atas em PDF localmente (`fpdf`), injetando dados sensíveis apenas no *front-end* no momento do download, sem envio para a nuvem.
+* **📊 Telemetria Oculta:** Registro automático de metadados de uso (data, perfis, geração de atas) em CSV para consumo estratégico do RH (Business Intelligence).
+
+---
+
+## 📂 Arquitetura do Projeto
+
+O projeto segue o padrão de **Separação de Responsabilidades (Separation of Concerns)**, garantindo escalabilidade e código limpo.
+
+```text
+clear-it-assistant/
+├── .env                 # Variáveis de ambiente (Chave de API) - NÃO VERSIONADO
+├── .gitignore           # Regras de exclusão do repositório
+├── README.md            # Documentação do projeto
+├── requirements.txt     # Dependências do projeto
+├── data/                # Armazenamento local de logs (Ignorado pelo Git)
+│   └── kpis_log.csv     # Telemetria para o RH
+└── src/                 # Código-fonte da aplicação
+    ├── app.py           # Ponto de entrada (Interface Streamlit)
+    ├── config.py        # Configurações globais
+    ├── components/      # UI Components (Filtros, botões)
+    ├── services/        # Lógica de Negócio e APIs
+    │   ├── ai_agent.py  # Integração e Mega-Prompt do Gemini
+    │   └── pdf_maker.py # Motor de geração de PDFs
+    └── utils/           # Ferramentas auxiliares
+        └── logger.py    # Sistema de gravação de KPIs
+
+```
+
+---
+
+## 🚀 Como Executar o Projeto Localmente
+
+Siga os passos abaixo para rodar a aplicação na sua máquina:
+
+### 1. Clone o repositório
+
+```bash
+git clone [https://github.com/DanielBrianez/ClearIT.git](https://github.com/DanielBrianez/ClearIT.git)
+cd ClearIT
+
+```
+
+### 2. Instale as dependências
+
+Recomenda-se o uso de um ambiente virtual (venv).
+
+```bash
+pip install -r requirements.txt
+
+```
+
+### 3. Configure as Variáveis de Ambiente
+
+Crie um arquivo chamado `.env` na raiz do projeto e adicione a sua chave de API do Google Gemini:
+
+```env
+GEMINI_API_KEY=sua_chave_secreta_aqui
+
+```
+
+### 4. Execute a Aplicação
+
+```bash
+streamlit run src/app.py
+
+```
+
+Acesse `http://localhost:8501` no seu navegador.
+
+---
+
+## 📋 Critérios de Aceite (MVP)
+
+* [ ] Geração de roteiros adaptados aos perfis comportamentais.
+* [ ] Dados sensíveis isolados do processamento em nuvem (LGPD).
+* [ ] Download de Ata em PDF formatada e pronta para assinatura.
+* [ ] Inclusão de pilar gamificado (XP, Badge, Missão) em todos os retornos.
+* [ ] Gravação de logs de metadados operacionais.
+
+---
+
+*Desenvolvido para o Desafio A - Recursos Humanos da Clear IT.*
