@@ -3,9 +3,9 @@
 Este documento define os requisitos técnicos e de negócio que devem ser atendidos para que a versão inicial (MVP) do Assistente de Liderança seja considerada "Pronta" (*Done*).
 
 ## 1. Personalização e Segurança (LGPD)
-- [ ] O sistema deve gerar um roteiro de 1:1 adaptado dinamicamente aos três perfis de liderança mapeados (Técnico, Em transição, Engajado) e ao contexto comportamental do liderado.
-- [ ] A comunicação com a IA deve ser processada utilizando estritamente contexto comportamental.
-- [ ] É terminantemente proibida a inserção de dados sensíveis (nomes reais, CPF, questões de saúde) no *prompt* enviado ao LLM, garantindo *Privacy by Design*.
+- [x] O sistema deve gerar um roteiro de 1:1 adaptado dinamicamente aos três perfis de liderança mapeados (Técnico, Em transição, Engajado) e ao contexto comportamental do liderado.
+- [x] A comunicação com a IA deve ser processada utilizando estritamente contexto comportamental.
+- [x] É terminantemente proibida a inserção de dados sensíveis (nomes reais, CPF, questões de saúde) no *prompt* enviado ao LLM, garantindo *Privacy by Design*.
 
 ## 2. Geração da Ata Oficial (Governança)
 - [ ] O sistema deve permitir a geração e o download de uma "Ata de Alinhamento" no formato PDF diretamente pelo navegador.
