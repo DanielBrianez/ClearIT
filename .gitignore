@@ -9,6 +9,7 @@
 # ==========================================
 # Ignora a nossa pasta de logs e qualquer ata gerada localmente
 data/
+temp/
 *.csv
 *.pdf
 
