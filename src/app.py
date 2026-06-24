@@ -2,6 +2,7 @@ import streamlit as st
 import os
 from src.services.ai_agent import gerar_roteiro_ia
 from src.services.pdf_maker import gerar_pdf
+from src.utils.logger import registrar_log_1a1
 
 st.set_page_config(page_title="Clear IT - Assistente de Liderança", page_icon="🤝", layout="centered")
 
@@ -36,6 +37,7 @@ def main():
                 try:
                     roteiro = gerar_roteiro_ia(perfil_lider, nivel_liderado, tempo_casa, perfil_comportamental, entregas_recentes)
                     st.session_state.roteiro_gerado = roteiro
+                    registrar_log_1a1(perfil_lider, nivel_liderado, tempo_casa, perfil_comportamental)
                 except Exception as e:
                     st.error(f"Erro na API do Gemini: {e}")
         else:
@@ -49,27 +51,41 @@ def main():
 
     st.divider()
 
-    # Bloco 2: Governança / Geração de PDF (Dados Reais entram apenas aqui)
+# Bloco 2: Governança / Geração de PDF
     st.header("2. Registro Oficial (Ata LGPD)")
-    st.info("Insira os nomes reais apenas para gerar o PDF local. Estes dados não são enviados para a IA.")
+    st.info("Insira os nomes reais apenas para gerar o PDF local.")
     
     col_nome1, col_nome2 = st.columns(2)
     with col_nome1: nome_lider = st.text_input("Nome do Líder:")
     with col_nome2: nome_liderado = st.text_input("Nome do Liderado:")
-
-    if st.session_state.roteiro_gerado and nome_lider and nome_liderado:
-        pdf_bytes = gerar_pdf(st.session_state.roteiro_gerado, nome_lider, nome_liderado)
+    
+    # Se o roteiro já foi gerado e está na memória
+    if "roteiro_gerado" in st.session_state:
+        roteiro_completo = st.session_state.roteiro_gerado
         
-        st.download_button(
-            label="📄 Baixar Ata Oficial (PDF)",
-            data=pdf_bytes,
-            file_name=f"Ata_1a1_{nome_liderado.replace(' ', '_')}.pdf",
-            mime="application/pdf",
-            type="primary",
-            use_container_width=True
-        )
-    elif not st.session_state.roteiro_gerado:
-        st.warning("Gere um roteiro primeiro para liberar a Ata em PDF.")
-
+        # ✂️ O Corte Mágico: Separa o texto na tag
+        if "--- ATA OFICIAL ---" in roteiro_completo:
+            partes = roteiro_completo.split("--- ATA OFICIAL ---")
+            texto_para_pdf = partes[1].strip() # Pega só a parte 2 (Resumo + Gamificação)
+        else:
+            # Caso a IA falhe e não coloque a tag, manda tudo por segurança
+            texto_para_pdf = roteiro_completo 
+            
+        if st.button("📄 Baixar Ata em PDF"):
+            if nome_lider and nome_liderado:
+                with st.spinner("Gerando PDF seguro..."):
+                    # Passamos apenas o texto_para_pdf (sem as dicas do líder)
+                    caminho_pdf = gerar_pdf(nome_lider, nome_liderado, texto_para_pdf)
+                    
+                    with open(caminho_pdf, "rb") as f:
+                        st.download_button(
+                            label="⬇️ Clique aqui para salvar o PDF",
+                            data=f,
+                            file_name=f"Ata_1a1_{nome_liderado.replace(' ', '_')}.pdf",
+                            mime="application/pdf"
+                        )
+            else:
+                st.warning("⚠️ Preencha os nomes reais do líder e liderado para gerar o documento.")
+                
 if __name__ == "__main__":
     main()
