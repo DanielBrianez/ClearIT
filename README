@@ -4,7 +4,7 @@
 ![Python](https://img.shields.io/badge/Python-3.9%2B-blue)
 ![Streamlit](https://img.shields.io/badge/Streamlit-Framework-FF4B4B)
 ![Gemini AI](https://img.shields.io/badge/Google_Gemini-Generative_AI-8E75B2)
-![Status](https://img.shields.io/badge/Status-MVP_em_Desenvolvimento-success)
+![Status](https://img.shields.io/badge/Status-MVP_Concluído-success)
 
 ## 🎯 Visão Geral
 O **Assistente de Liderança Clear IT** é uma aplicação web focada em apoiar líderes na preparação, condução e documentação de reuniões de 1:1 e feedbacks. 
@@ -18,7 +18,7 @@ Utilizando Inteligência Artificial (Google Gemini), o sistema cruza o perfil do
 * **🧠 Motor de Hiper-Personalização:** Roteiros adaptados para 3 perfis de liderança (Técnico, Transição, Engajado) e 4 perfis comportamentais de liderados.
 * **🎮 Gamificação de Feedback:** Geração automática de métricas de XP, Badges de reconhecimento e Missões baseadas em entregas reais.
 * **📄 Governança e LGPD (Gerador de Ata):** Criação de Atas em PDF localmente (`fpdf`), injetando dados sensíveis apenas no *front-end* no momento do download, sem envio para a nuvem.
-* **📊 Telemetria Oculta:** Registro automático de metadados de uso (data, perfis, geração de atas) em CSV para consumo estratégico do RH (Business Intelligence).
+* **📊 Telemetria Oculta:** Registro automático de metadados de uso (data, perfis, geração de atas) em CSV para consumo estratégico do RH (Business Analytics).
 
 ---
 
@@ -30,19 +30,28 @@ O projeto segue o padrão de **Separação de Responsabilidades (Separation of C
 clear-it-assistant/
 ├── .env                 # Variáveis de ambiente (Chave de API) - NÃO VERSIONADO
 ├── .gitignore           # Regras de exclusão do repositório
-├── README.md            # Documentação do projeto
-├── requirements.txt     # Dependências do projeto
+├── README.md            # Documentação principal do projeto
+├── requirements.txt     # Dependências essenciais do projeto
+├── assets/              # Assets estáticos
+│   └── style.css        # Estilização CSS customizada (Interface Premium)
 ├── data/                # Armazenamento local de logs (Ignorado pelo Git)
-│   └── kpis_log.csv     # Telemetria para o RH
+│   └── telemetry_logs.csv # Telemetria anônima para o RH
+├── docs/                # Documentação técnica e de negócio
+│   ├── acceptance_criteria.md
+│   ├── business_context.md
+│   └── roadmap_mvp.md
+├── scripts/             # Ferramentas e utilitários isolados
+│   └── test_models.py
+├── temp/                # Diretório volátil para geração de PDFs (Ignorado pelo Git)
 └── src/                 # Código-fonte da aplicação
-    ├── app.py           # Ponto de entrada (Interface Streamlit)
-    ├── config.py        # Configurações globais
-    ├── components/      # UI Components (Filtros, botões)
+    ├── app.py           # Ponto de entrada (Interface Streamlit principal)
+    ├── components/      # UI Components 
+    │   └── ui_forms.py  # Desacoplamento dos formulários de entrada
     ├── services/        # Lógica de Negócio e APIs
     │   ├── ai_agent.py  # Integração e Mega-Prompt do Gemini
-    │   └── pdf_maker.py # Motor de geração de PDFs
+    │   └── pdf_maker.py # Motor de geração de PDFs com limpeza Regex
     └── utils/           # Ferramentas auxiliares
-        └── logger.py    # Sistema de gravação de KPIs
+        └── logger.py    # Sistema de gravação de logs operacionais
 
 ```
 
@@ -91,12 +100,14 @@ Acesse `http://localhost:8501` no seu navegador.
 
 ## 📋 Critérios de Aceite (MVP)
 
-* [ ] Geração de roteiros adaptados aos perfis comportamentais.
-* [ ] Dados sensíveis isolados do processamento em nuvem (LGPD).
-* [ ] Download de Ata em PDF formatada e pronta para assinatura.
-* [ ] Inclusão de pilar gamificado (XP, Badge, Missão) em todos os retornos.
-* [ ] Gravação de logs de metadados operacionais.
+* [x] Geração de roteiros adaptados aos perfis comportamentais.
+* [x] Dados sensíveis isolados do processamento em nuvem (LGPD).
+* [x] Download de Ata em PDF formatada e pronta para assinatura.
+* [x] Inclusão de pilar gamificado (XP, Badge, Missão) em todos os retornos.
+* [x] Gravação de logs de metadados operacionais.
 
 ---
 
 *Desenvolvido para o Desafio A - Recursos Humanos da Clear IT.*
+
+```
