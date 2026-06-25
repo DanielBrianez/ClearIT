@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap');
+
+/* =========================================
+   1. TIPOGRAFIA E RESET GLOBAL
+   ========================================= */
+* { font-family: 'Titillium Web', sans-serif !important; }
+#MainMenu, header, footer { visibility: hidden; }
+
+/* =========================================
+   2. BACKGROUND E TEMA (LIGHT MODE PADRÃO)
+   ========================================= */
+.stApp {
+    background-color: #FAFAFA;
+    background-image: radial-gradient(#CBD5E1 1px, transparent 1px);
+    background-size: 24px 24px;
+}
+
+/* Força TODOS os textos a ficarem escuros no modo claro */
+h1, h2, h3, p, span, label, li, div[data-testid="stMarkdownContainer"] p { 
+    color: #1E293B !important; 
+}
+
+/* O Formulário */
+div[data-testid="stForm"] {
+    background-color: #FFFFFF;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8F0;
+}
+
+/* =========================================
+   3. BOTÃO GERAR ROTEIRO (Branco e Azul)
+   ========================================= */
+div[data-testid="stFormSubmitButton"] > button {
+    background: #FFFFFF !important;
+    border: 2px solid #2563EB !important;
+    border-radius: 8px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+/* Garante a cor azul do texto dentro do botão */
+div[data-testid="stFormSubmitButton"] > button * {
+    color: #2563EB !important;
+    font-size: 1.05rem !important;
+}
+
+div[data-testid="stFormSubmitButton"] > button:hover {
+    background: #1E3A8A !important; 
+    border-color: #1E3A8A !important;
+    transform: translateY(-2px);
+}
+
+/* No hover, o texto fica branco */
+div[data-testid="stFormSubmitButton"] > button:hover * {
+    color: #FFFFFF !important;
+}
+
+/* =========================================
+   4. BOTÃO DE DOWNLOAD (PDF)
+   ========================================= */
+button[kind="primary"] {
+    background: linear-gradient(135deg, #6B46C1 0%, #2563EB 100%) !important;
+    border: none !important;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: transform 0.2s ease;
+}
+
+button[kind="primary"] * {
+    color: white !important;
+}
+
+button[kind="primary"]:hover { transform: translateY(-2px); }
+
+button[disabled] {
+    background: #F1F5F9 !important;
+    border: 1px solid #E2E8F0 !important;
+    transform: none !important;
+}
+
+button[disabled] * {
+    color: #94A3B8 !important;
+}
+
+/* =========================================
+   5. INPUTS E SELECTS
+   ========================================= */
+/* Campos de Texto (Inputs e TextAreas) normais */
+div.stTextInput > div > div > input,
+div.stTextArea > div > div > textarea {
+    border-radius: 6px;
+    border: 1px solid #CBD5E1;
+    background-color: #FFFFFF;
+    color: #334155 !important;
+    transition: all 0.2s ease;
+}
+
+/* Dropdowns (Selectbox) - Branco com Borda Azul Oficial */
+div[data-baseweb="select"] > div {
+    background-color: #FFFFFF !important;
+    border: 2px solid #2563EB !important;
+    border-radius: 6px !important;
+}
+
+/* Garante que a lista de opções que abre fique com fonte escura no Light Mode */
+div[role="listbox"] span, ul li {
+    color: #1E293B !important;
+}
+
+/* Efeito Hover/Focus apenas para os campos de texto normais */
+div.stTextInput > div > div > input:focus,
+div.stTextArea > div > div > textarea:focus {
+    border-color: #3B82F6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+}
+
+/* Força a fonte da opção selecionada para escuro */
+div[data-baseweb="select"] div[data-testid="stMarkdownContainer"] p {
+    color: #1E293B !important;
+}
+
+/* Pinta a setinha do dropdown de ESCURO no Light Mode */
+div[data-baseweb="select"] svg {
+    fill: #1E293B !important;
+    color: #1E293B !important;
+} /* <--- A CHAVE QUE FALTAVA ERA ESSA AQUI! */
+
+/* =========================================
+   6. AJUSTES FINOS (PLACEHOLDERS E TOGGLE)
+   ========================================= */
+
+/* Força o texto de dica (Placeholder) a ficar cinza no Light Mode */
+div.stTextInput > div > div > input::placeholder,
+div.stTextArea > div > div > textarea::placeholder {
+    color: #94A3B8 !important; /* Cinza médio/claro */
+    opacity: 1 !important;
+}
+
+/* Garante que o texto e o fundo do Switch (Toggle) não sumam no branco */
+div[data-testid="stCheckbox"] p,
+div[data-testid="stWidgetLabel"] p,
+label[data-baseweb="checkbox"] div {
+    color: #1E293B !important; /* Texto escuro */
+}
+
+/* Escurece levemente o 'trilho' do Switch desativado no Light Mode */
+div[data-testid="stCheckbox"] label > div[data-baseweb="checkbox"] > div {
+    background-color: #E2E8F0 !important; 
+    border: 1px solid #CBD5E1 !important;
+}
+
+/* =========================================
+   7. BALÕES DOS DROPDOWNS (POPOVERS E SELEÇÃO)
+   ========================================= */
+/* OPÇÃO NUCLEAR: Força ABSOLUTAMENTE TUDO no dropdown fechado a ficar escuro */
+div[data-baseweb="select"] * {
+    color: #1E293B !important;
+}
+
+/* OPÇÃO NUCLEAR: Força ABSOLUTAMENTE TUDO no balão aberto a ficar escuro */
+div[data-baseweb="popover"] * {
+    color: #1E293B !important;
+}
+
+/* Fundo do balão flutuante */
+div[data-baseweb="popover"] > div,
+div[data-baseweb="popover"] ul {
+    background-color: #FFFFFF !important;
+    border: 1px solid #CBD5E1 !important;
+    border-radius: 8px !important;
+}
+
+/* Fundo das opções (itens da lista) */
+li[role="option"] {
+    background-color: #FFFFFF !important;
+    transition: background-color 0.2s ease;
+}
+
+/* Efeito Hover e item selecionado */
+li[role="option"]:hover,
+li[role="option"]:hover *,
+li[role="option"][aria-selected="true"],
+li[role="option"][aria-selected="true"] * {
+    background-color: #F1F5F9 !important;
+    color: #2563EB !important; /* Azul ClearIT */
+}

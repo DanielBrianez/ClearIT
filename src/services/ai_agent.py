@@ -3,7 +3,7 @@ from src.config import configurar_gemini
 
 # Inicializa a configuração
 configurar_gemini()
-modelo = genai.GenerativeModel('gemini-3.5-flash')
+modelo = genai.GenerativeModel('gemini-2.5-flash')
 
 def gerar_roteiro_ia(perfil_lider, nivel_liderado, tempo_casa, perfil_comportamental, entregas_recentes, acordos=""):
     
@@ -34,7 +34,7 @@ def gerar_roteiro_ia(perfil_lider, nivel_liderado, tempo_casa, perfil_comportame
 
     --- ATA OFICIAL ---
 
-    PARTE 2 (Abaixo da tag): RESUMO DO ALINHAMENTO (Para o PDF)
+    PARTE 2 (Abaixo da tag): RESUMO DO ALINHAMENTO
     - Escreva de forma formal, impessoal e corporativa (este texto irá para o RH).
     - Comece OBRIGATORIAMENTE com: "Nesta reunião de alinhamento, conversamos sobre os seguintes tópicos..."
     - Faça o resumo dos pontos abordados e destaque os acordos firmados.
