@@ -7,87 +7,53 @@
 #MainMenu, header, footer { visibility: hidden; }
 
 /* =========================================
-   2. BACKGROUND E TEMA (LIGHT MODE PADRÃO)
+   2. BACKGROUND, TEMA E FORMULÁRIO
    ========================================= */
 .stApp {
     background-color: #FAFAFA;
-    background-image: radial-gradient(#CBD5E1 1px, transparent 1px);
-    background-size: 24px 24px;
 }
 
 /* Força TODOS os textos a ficarem escuros no modo claro */
 h1, h2, h3, p, span, label, li, div[data-testid="stMarkdownContainer"] p { 
-    color: #1E293B !important; 
+    color: #000000 !important; 
 }
 
-/* O Formulário */
-div[data-testid="stForm"] {
-    background-color: #FFFFFF;
+/* O Formulário Principal */
+body div[data-testid="stForm"] {
+    background-color: #FFFFFF !important;
     padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-    border: 1px solid #E2E8F0;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+    border-style: solid !important;
+    border-width: 1px !important;
+    border-color: #CBD5E1 !important; 
 }
 
 /* =========================================
-   3. BOTÃO GERAR ROTEIRO (Branco e Azul)
+   3. BOTÃO GERAR ROTEIRO (Azul ClearIT)
    ========================================= */
-div[data-testid="stFormSubmitButton"] > button {
-    background: #FFFFFF !important;
+body div[data-testid="stFormSubmitButton"] > button {
+    background: #2563EB !important; 
     border: 2px solid #2563EB !important;
     border-radius: 8px;
     font-weight: 700;
     transition: all 0.3s ease;
 }
 
-/* Garante a cor azul do texto dentro do botão */
-div[data-testid="stFormSubmitButton"] > button * {
-    color: #2563EB !important;
+body div[data-testid="stFormSubmitButton"] > button * {
+    color: #FFFFFF !important;
     font-size: 1.05rem !important;
 }
 
-div[data-testid="stFormSubmitButton"] > button:hover {
+body div[data-testid="stFormSubmitButton"] > button:hover {
     background: #1E3A8A !important; 
     border-color: #1E3A8A !important;
-    transform: translateY(-2px);
-}
-
-/* No hover, o texto fica branco */
-div[data-testid="stFormSubmitButton"] > button:hover * {
-    color: #FFFFFF !important;
+    transform: translateY(-3px);
 }
 
 /* =========================================
-   4. BOTÃO DE DOWNLOAD (PDF)
+   4. INPUTS E SELECTS
    ========================================= */
-button[kind="primary"] {
-    background: linear-gradient(135deg, #6B46C1 0%, #2563EB 100%) !important;
-    border: none !important;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: transform 0.2s ease;
-}
-
-button[kind="primary"] * {
-    color: white !important;
-}
-
-button[kind="primary"]:hover { transform: translateY(-2px); }
-
-button[disabled] {
-    background: #F1F5F9 !important;
-    border: 1px solid #E2E8F0 !important;
-    transform: none !important;
-}
-
-button[disabled] * {
-    color: #94A3B8 !important;
-}
-
-/* =========================================
-   5. INPUTS E SELECTS
-   ========================================= */
-/* Campos de Texto (Inputs e TextAreas) normais */
 div.stTextInput > div > div > input,
 div.stTextArea > div > div > textarea {
     border-radius: 6px;
@@ -97,74 +63,59 @@ div.stTextArea > div > div > textarea {
     transition: all 0.2s ease;
 }
 
-/* Dropdowns (Selectbox) - Branco com Borda Azul Oficial */
 div[data-baseweb="select"] > div {
     background-color: #FFFFFF !important;
     border: 2px solid #2563EB !important;
     border-radius: 6px !important;
 }
 
-/* Garante que a lista de opções que abre fique com fonte escura no Light Mode */
 div[role="listbox"] span, ul li {
     color: #1E293B !important;
 }
 
-/* Efeito Hover/Focus apenas para os campos de texto normais */
 div.stTextInput > div > div > input:focus,
 div.stTextArea > div > div > textarea:focus {
     border-color: #3B82F6 !important;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
 }
 
-/* Força a fonte da opção selecionada para escuro */
 div[data-baseweb="select"] div[data-testid="stMarkdownContainer"] p {
     color: #1E293B !important;
 }
 
-/* Pinta a setinha do dropdown de ESCURO no Light Mode */
 div[data-baseweb="select"] svg {
     fill: #1E293B !important;
     color: #1E293B !important;
-} /* <--- A CHAVE QUE FALTAVA ERA ESSA AQUI! */
+} 
 
 /* =========================================
-   6. AJUSTES FINOS (PLACEHOLDERS E TOGGLE)
+   5. AJUSTES FINOS (PLACEHOLDERS E TOGGLE)
    ========================================= */
-
-/* Força o texto de dica (Placeholder) a ficar cinza no Light Mode */
 div.stTextInput > div > div > input::placeholder,
 div.stTextArea > div > div > textarea::placeholder {
-    color: #94A3B8 !important; /* Cinza médio/claro */
+    color: #94A3B8 !important; 
     opacity: 1 !important;
 }
 
-/* Garante que o texto e o fundo do Switch (Toggle) não sumam no branco */
 div[data-testid="stCheckbox"] p,
 div[data-testid="stWidgetLabel"] p,
 label[data-baseweb="checkbox"] div {
-    color: #1E293B !important; /* Texto escuro */
+    color: #1E293B !important; 
 }
 
-/* Escurece levemente o 'trilho' do Switch desativado no Light Mode */
 div[data-testid="stCheckbox"] label > div[data-baseweb="checkbox"] > div {
-    background-color: #E2E8F0 !important; 
-    border: 1px solid #CBD5E1 !important;
+    background-color: #000000 !important; 
+    border: 1px solid #000000 !important;
 }
 
 /* =========================================
-   7. BALÕES DOS DROPDOWNS (POPOVERS E SELEÇÃO)
+   6. BALÕES DOS DROPDOWNS (POPOVERS E SELEÇÃO)
    ========================================= */
-/* OPÇÃO NUCLEAR: Força ABSOLUTAMENTE TUDO no dropdown fechado a ficar escuro */
-div[data-baseweb="select"] * {
-    color: #1E293B !important;
-}
-
-/* OPÇÃO NUCLEAR: Força ABSOLUTAMENTE TUDO no balão aberto a ficar escuro */
+div[data-baseweb="select"] *,
 div[data-baseweb="popover"] * {
     color: #1E293B !important;
 }
 
-/* Fundo do balão flutuante */
 div[data-baseweb="popover"] > div,
 div[data-baseweb="popover"] ul {
     background-color: #FFFFFF !important;
@@ -172,17 +123,84 @@ div[data-baseweb="popover"] ul {
     border-radius: 8px !important;
 }
 
-/* Fundo das opções (itens da lista) */
 li[role="option"] {
     background-color: #FFFFFF !important;
     transition: background-color 0.2s ease;
 }
 
-/* Efeito Hover e item selecionado */
 li[role="option"]:hover,
 li[role="option"]:hover *,
 li[role="option"][aria-selected="true"],
 li[role="option"][aria-selected="true"] * {
     background-color: #F1F5F9 !important;
-    color: #2563EB !important; /* Azul ClearIT */
+    color: #2563EB !important; 
+}
+
+/* =========================================
+   7. CARDS DO TIME E RANKING (MODO CLARO)
+   ========================================= */
+/* Quebramos a propriedade border para forçar o Streamlit a aceitar */
+body div[data-testid="stVerticalBlockBorderWrapper"] {
+    background-color: #FFFFFF !important;
+    border-style: solid !important;
+    border-width: 1px !important;
+    border-color: #CBD5E1 !important; 
+    border-radius: 10px !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05) !important; 
+    transition: all 0.3s ease !important;
+}
+
+body div[data-testid="stVerticalBlockBorderWrapper"]:hover {
+    border-color: #2563EB !important; 
+    box-shadow: 0 6px 15px rgba(37, 99, 235, 0.15) !important; 
+    transform: translateY(-3px) !important; 
+}
+
+div[data-testid="stImage"] img {
+    border: 2px solid #CBD5E1 !important;
+    border-radius: 50% !important;
+    padding: 2px !important;
+}
+
+/* =========================================
+   8. NAVBAR (ABAS)
+   ========================================= */
+div[data-testid="stTabs"] > div[data-baseweb="tab-list"] {
+    gap: 2.5rem; 
+    border-bottom: 1px solid #E2E8F0; 
+    margin-bottom: 2rem;
+}
+
+button[data-baseweb="tab"] {
+    color: #475569 !important; 
+    font-size: 1.05rem !important; 
+    font-weight: 400 !important; 
+    padding-bottom: 1rem !important;
+    transition: color 0.2s ease !important;
+}
+
+button[data-baseweb="tab"]:hover {
+    color: #2563EB !important; 
+}
+
+button[data-baseweb="tab"][aria-selected="true"] {
+    color: #2563EB !important; 
+    border-bottom-color: #2563EB !important; 
+    font-weight: 600 !important;
+}
+
+/* =========================================
+   9. NOTIFICAÇÕES E TOASTS
+   ========================================= */
+body div[data-testid="stNotification"], 
+body div[data-testid="stToast"] {
+    background-color: #1E293B !important; 
+    border: none !important;
+    border-left: 5px solid #2563EB !important; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+body div[data-testid="stNotification"] *, 
+body div[data-testid="stToast"] * {
+    color: #FFFFFF !important;
 }

@@ -38,10 +38,7 @@ def gerar_roteiro_ia(perfil_lider, nivel_liderado, tempo_casa, perfil_comportame
     - Escreva de forma formal, impessoal e corporativa (este texto irá para o RH).
     - Comece OBRIGATORIAMENTE com: "Nesta reunião de alinhamento, conversamos sobre os seguintes tópicos..."
     - Faça o resumo dos pontos abordados e destaque os acordos firmados.
-    - Crie o bloco de GAMIFICAÇÃO contendo:
-       1. Um Badge de reconhecimento (ex: 🏆 Badge de Resiliência) baseado nas entregas.
-       2. +XP (atribua uma pontuação de 50 a 500 XP justificando o motivo).
-       3. Uma Missão clara para a próxima quinzena.
+      Lembre-se: a primeira parte é confidencial e voltada para o líder, enquanto a segunda parte é formal e voltada para o RH.
     """
     
     resposta = modelo.generate_content(prompt)
