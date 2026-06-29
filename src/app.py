@@ -1,130 +1,32 @@
 import streamlit as st
 import re
 import base64
-import pandas as pd
-import uuid
-import os
 from src.components.ui_forms import renderizar_formulario_contexto
 from src.services.ai_agent import gerar_roteiro_ia
 from src.services.pdf_maker import gerar_pdf
-from src.utils.logger import registrar_log_1a1, marcar_ata_baixada
+from src.utils.logger import registrar_log_1a1
 
 # ==========================================================
 # 📊 BANCO DE DADOS LOCAL (Alimenta o Front-end sem ir para a IA)
 # ==========================================================
-DB_LIDERES_METADATA = {
-    "Daniel Nascimento": {"area": "Tecnologia", "perfil": "Técnico (Focado em entregas e dados)"},
-    "Bruna Silva": {"area": "Tecnologia", "perfil": "Em Transição (Novo na liderança, precisa de apoio)"},
-    "Rodrigo Costa": {"area": "Negócios & Vendas", "perfil": "Engajado (Focado em carreira e desenvolvimento)"},
-    "Amanda Souza": {"area": "RH & Operações", "perfil": "Engajado (Focado em carreira e desenvolvimento)"}
-}
-DB_LIDERES = list(DB_LIDERES_METADATA.keys())
+DB_LIDERES = ["Daniel Nascimento", "Bruna Silva", "Rodrigo Costa", "Amanda Souza"]
 DB_LIDERADOS = ["Paulo Augusto", "Lucas Silva", "Mariana Santos", "Pedro Alves", "Julia Ribeiro", "Gustavo Lima", "Beatriz Reis"]
-
-def popular_dados_demonstracao():
-    """Gera logs de telemetria históricos fictícios para a demonstração inicial e cálculo de maturidade."""
-    caminho_csv = os.path.join(os.path.dirname(__file__), "..", "data", "telemetry_logs.csv")
-    if not os.path.exists(caminho_csv):
-        os.makedirs(os.path.dirname(caminho_csv), exist_ok=True)
-        dados = [
-            ["ID_Rito", "Data_Hora", "Nome_Lider", "Area_Lider", "Perfil_Lider", "Senioridade_Liderado", "Tempo_Casa", "Perfil_Comportamental", "Contem_PDI", "Ata_Baixada"],
-            [str(uuid.uuid4()), "2026-06-15 10:00:00", "Daniel Nascimento", "Tecnologia", "Técnico (Focado em entregas e dados)", "Júnior", "Menos de 6 meses", "Analítico", "Sim", "Sim"],
-            [str(uuid.uuid4()), "2026-06-15 14:30:00", "Daniel Nascimento", "Tecnologia", "Técnico (Focado em entregas e dados)", "Pleno", "1 a 3 anos", "Executor", "Sim", "Sim"],
-            [str(uuid.uuid4()), "2026-06-16 09:00:00", "Bruna Silva", "Tecnologia", "Em Transição (Novo na liderança, precisa de apoio)", "Estagiário", "Menos de 6 meses", "Comunicador", "Sim", "Não"],
-            [str(uuid.uuid4()), "2026-06-16 16:00:00", "Rodrigo Costa", "Negócios & Vendas", "Engajado (Focado em carreira e desenvolvimento)", "Sênior", "Mais de 3 anos", "Planejador", "Sim", "Sim"],
-            [str(uuid.uuid4()), "2026-06-17 11:00:00", "Amanda Souza", "RH & Operações", "Engajado (Focado em carreira e desenvolvimento)", "Pleno", "6 meses a 1 ano", "Comunicador", "Não", "Sim"],
-            [str(uuid.uuid4()), "2026-06-18 10:30:00", "Daniel Nascimento", "Tecnologia", "Técnico (Focado em entregas e dados)", "Sênior", "Mais de 3 anos", "Analítico", "Sim", "Sim"],
-            [str(uuid.uuid4()), "2026-06-18 15:00:00", "Bruna Silva", "Tecnologia", "Em Transição (Novo na liderança, precisa de apoio)", "Júnior", "6 meses a 1 ano", "Executor", "Não", "Sim"],
-            [str(uuid.uuid4()), "2026-06-19 14:00:00", "Rodrigo Costa", "Negócios & Vendas", "Engajado (Focado em carreira e desenvolvimento)", "Pleno", "1 a 3 anos", "Comunicador", "Sim", "Sim"],
-            [str(uuid.uuid4()), "2026-06-22 09:30:00", "Daniel Nascimento", "Tecnologia", "Técnico (Focado em entregas e dados)", "Estagiário", "Menos de 6 meses", "Planejador", "Sim", "Não"],
-            [str(uuid.uuid4()), "2026-06-23 10:00:00", "Rodrigo Costa", "Negócios & Vendas", "Engajado (Focado em carreira e desenvolvimento)", "Júnior", "6 meses a 1 ano", "Analítico", "Não", "Sim"],
-            [str(uuid.uuid4()), "2026-06-23 15:30:00", "Bruna Silva", "Tecnologia", "Em Transição (Novo na liderança, precisa de apoio)", "Pleno", "1 a 3 anos", "Planejador", "Sim", "Não"],
-            [str(uuid.uuid4()), "2026-06-24 11:30:00", "Daniel Nascimento", "Tecnologia", "Técnico (Focado em entregas e dados)", "Pleno", "6 meses a 1 ano", "Executor", "Sim", "Sim"],
-            [str(uuid.uuid4()), "2026-06-24 16:00:00", "Amanda Souza", "RH & Operações", "Engajado (Focado em carreira e desenvolvimento)", "Sênior", "Mais de 3 anos", "Analítico", "Sim", "Sim"],
-            [str(uuid.uuid4()), "2026-06-25 10:00:00", "Rodrigo Costa", "Negócios & Vendas", "Engajado (Focado em carreira e desenvolvimento)", "Estagiário", "Menos de 6 meses", "Executor", "Sim", "Sim"],
-            [str(uuid.uuid4()), "2026-06-25 14:30:00", "Daniel Nascimento", "Tecnologia", "Técnico (Focado em entregas e dados)", "Sênior", "Mais de 3 anos", "Comunicador", "Não", "Sim"],
-            [str(uuid.uuid4()), "2026-06-26 09:00:00", "Bruna Silva", "Tecnologia", "Em Transição (Novo na liderança, precisa de apoio)", "Júnior", "6 meses a 1 ano", "Analítico", "Sim", "Sim"],
-            [str(uuid.uuid4()), "2026-06-26 13:30:00", "Rodrigo Costa", "Negócios & Vendas", "Engajado (Focado em carreira e desenvolvimento)", "Pleno", "1 a 3 anos", "Planejador", "Sim", "Sim"],
-            [str(uuid.uuid4()), "2026-06-26 15:00:00", "Daniel Nascimento", "Tecnologia", "Técnico (Focado em entregas e dados)", "Júnior", "Menos de 6 meses", "Comunicador", "Sim", "Sim"]
-        ]
-        with open(caminho_csv, mode="w", newline="", encoding="utf-8") as file:
-            writer = csv.writer(file, delimiter=";")
-            writer.writerows(dados)
-
-def carregar_dados_telemetria():
-    caminho_csv = os.path.join(os.path.dirname(__file__), "..", "data", "telemetry_logs.csv")
-    if os.path.exists(caminho_csv):
-        try:
-            return pd.read_csv(caminho_csv, sep=";")
-        except Exception:
-            return pd.DataFrame()
-    return pd.DataFrame()
-
-def calcular_estatisticas_lideres(df):
-    estatisticas = {}
-    
-    # Inicializa todos do banco com 0
-    for lider, meta in DB_LIDERES_METADATA.items():
-        estatisticas[lider] = {
-            "ritos": 0,
-            "atas_baixadas": 0,
-            "pdis": 0,
-            "taxa_doc": 0.0,
-            "taxa_pdi": 0.0,
-            "maturidade": "Iniciante",
-            "icone_maturidade": "🔴",
-            "area": meta["area"],
-            "perfil": meta["perfil"]
-        }
-        
-    if df.empty:
-        return estatisticas
-        
-    for lider in DB_LIDERES:
-        df_lider = df[df["Nome_Lider"] == lider]
-        if not df_lider.empty:
-            ritos = len(df_lider)
-            atas_baixadas = len(df_lider[df_lider["Ata_Baixada"] == "Sim"])
-            pdis = len(df_lider[df_lider["Contem_PDI"] == "Sim"])
-            
-            taxa_doc = atas_baixadas / ritos if ritos > 0 else 0
-            taxa_pdi = pdis / ritos if ritos > 0 else 0
-            
-            # Motor de maturidade baseado nos drivers
-            if ritos >= 8 and taxa_doc >= 0.85 and taxa_pdi >= 0.7:
-                maturidade = "Referência"
-                icone = "🔵"
-            elif ritos >= 5 and taxa_doc >= 0.7 and taxa_pdi >= 0.5:
-                maturidade = "Consistente"
-                icone = "🟢"
-            elif ritos >= 3 and (taxa_doc >= 0.5 or taxa_pdi >= 0.4):
-                maturidade = "Em Desenvolvimento"
-                icone = "🟡"
-            else:
-                maturidade = "Iniciante"
-                icone = "🔴"
-                
-            estatisticas[lider].update({
-                "ritos": ritos,
-                "atas_baixadas": atas_baixadas,
-                "pdis": pdis,
-                "taxa_doc": taxa_doc,
-                "taxa_pdi": taxa_pdi,
-                "maturidade": maturidade,
-                "icone_maturidade": icone
-            })
-            
-    return estatisticas
 
 def main():
     st.set_page_config(page_title="Smart Leading - ClearIT", page_icon="assets/favicon.ico", layout="centered")
 
-    # Garante dados de demonstração coerentes no primeiro carregamento
-    popular_dados_demonstracao()
-
     # --- GERENCIAMENTO DE ESTADO GLOBAIS ---
     if "is_generating" not in st.session_state:
         st.session_state.is_generating = False
+
+    # Inicializa o Ranking com dados fictícios para a tela não nascer vazia
+    if "ranking" not in st.session_state:
+        st.session_state.ranking = {
+            "Daniel Nascimento": 14,
+            "Bruna Silva": 9,
+            "Rodrigo Costa": 7,
+            "Amanda Souza": 4
+        }
 
     # --- 1. CABEÇALHO (LOGO CLICÁVEL E DARK MODE) NO TOPO ABSOLUTO ---
     col_logo, col_tema = st.columns([4, 1])
@@ -133,19 +35,25 @@ def main():
         with open(caminho_imagem, "rb") as img_file:
             return base64.b64encode(img_file.read()).decode()
         
-    def computar_pontos_lider():
+    def computar_pontos_lider(nome_lider):
+        """Disparada na hora exata do download do PDF: soma +100 XP pro Líder"""
+        st.session_state.ranking[nome_lider] = st.session_state.ranking.get(nome_lider, 0) + 1
         st.session_state.lider_ganhou_ponto = True
         
     with col_logo:
+        # Aponte para o nome exato da imagem que você salvou na pasta assets!
         img_base64 = get_base64_image("assets/logo.png") 
+        
         st.markdown(f"""
             <a href="/" target="_self" style="text-decoration: none;">
                 <img src="data:image/png;base64,{img_base64}" width="160" alt="Logo Clear IT" style="margin-top: 5px;">
             </a>
         """, unsafe_allow_html=True)
+
+        
         
     with col_tema:
-        st.write("") 
+        st.write("") # Espaço para alinhar verticalmente
         tema_escuro = st.toggle("🌙 Dark Mode")
 
     # --- 2. INJEÇÃO DE CSS DINÂMICA ---
@@ -167,7 +75,7 @@ def main():
         body div[data-testid="stNotification"] * {
             color: #F8FAFC !important;
         }
-        
+
         body div[data-testid="stForm"] {
             background-color: #1E293B !important;
             border-color: #334155 !important;
@@ -218,6 +126,7 @@ def main():
             color: #60A5FA !important;
         }
 
+        /* CARDS E FOTOS NO MODO ESCURO */
         body div[data-testid="stVerticalBlockBorderWrapper"] {
             background-color: #1E293B !important;
             border-color: #334155 !important;
@@ -231,50 +140,44 @@ def main():
 
     st.markdown(f"<style>{css_base}\n{css_dark}</style>", unsafe_allow_html=True)
 
+    # --- 3. GERENCIAMENTO DE ESTADO E TRAVAS ---
+    if "is_generating" not in st.session_state:
+        st.session_state.is_generating = False
+
     def travar_tela():
         st.session_state.is_generating = True
 
     # ==========================================================
-    # 4. NAVBAR: ABAS DE NAVEGAÇÃO
+    # 4. NAVBAR: ABAS DE NAVEGAÇÃO (Agora grudadinhas no topo!)
     # ==========================================================
-    tab_home, tab_ranking, tab_rh, tab_time, tab_sobre = st.tabs([
-        "🏠 Home", 
-        "🏆 Liga de Líderes", 
-        "📊 Painel do RH (People Analytics)",
-        "👥 Nosso Time", 
-        "ℹ️ Sobre o Projeto"
-    ])
+    tab_home, tab_ranking, tab_time, tab_sobre = st.tabs(["🏠 Home", "🏆 Ranking de Líderes", "👥 Nosso Time", "ℹ️ Sobre o Projeto"])
 
     # ----------------------------------------------------------
-    # ABA 1: HOME
+    # ABA 1: HOME (O aplicativo principal inteiro mora aqui dentro)
     # ----------------------------------------------------------
     with tab_home:
+        
+        # 👉 Movemos o Título Gigante para DENTRO da aba Home!
         st.title("Smart Leading - ClearIT")
-        st.markdown("Identifique os participantes e preencha as variáveis para gerar o roteiro e a ata oficial de 1:1.")
-        st.markdown("<br>", unsafe_allow_html=True) 
+        st.markdown("Preencha o contexto comportamental abaixo para gerar um roteiro seguro e customizado.")
+        st.markdown("<br>", unsafe_allow_html=True) # Espaçamento para o form respirar
 
         # Celebração de pontos do Líder
         if "lider_ganhou_ponto" in st.session_state and st.session_state.lider_ganhou_ponto:
             st.balloons()
-            st.toast("🎯 Sensacional! Rito documentado e pontuação computada na Liga de Líderes!", icon="🔥")
+            st.toast("🎯 Sensacional! +1 sessão computada no seu Ranking de Líderes!", icon="🔥")
             st.session_state.lider_ganhou_ponto = False
 
         if "alerta_form" in st.session_state:
             st.warning(st.session_state.alerta_form)
             del st.session_state.alerta_form
 
-        # Identificação dos nomes
-        st.header("Identificação do Encontro")
-        st.info("Insira os nomes reais. Eles não são enviados para a IA (Conformidade com a LGPD), apenas injetados localmente na Ata em PDF.")
-        col_nome1, col_nome2 = st.columns(2)
-        with col_nome1:
-            nome_lider = st.selectbox("Identifique-se (Líder):", [""] + DB_LIDERES)
-        with col_nome2:
-            nome_liderado = st.selectbox("Selecione o Liderado:", [""] + DB_LIDERADOS)
-            
-        st.markdown("---")
+        # Exibe alertas na aba Home
+        if "alerta_form" in st.session_state:
+            st.warning(st.session_state.alerta_form)
+            del st.session_state.alerta_form
 
-        # Formulário
+        # O Formulário
         with st.form("form_contexto"):
             perfil_lider, nivel_liderado, tempo_casa, perfil_comportamental, entregas_recentes, acordos = renderizar_formulario_contexto(
                 disabled=st.session_state.is_generating
@@ -287,56 +190,38 @@ def main():
                 on_click=travar_tela
             )
         
-        # Validação do formulário disparada no submit
-        if gerar_btn:
-            if not nome_lider or not nome_liderado:
-                st.session_state.alerta_form = "⚠️ Você precisa selecionar o Líder e o Liderado nos dropdowns de Identificação no topo antes de gerar."
-                st.session_state.is_generating = False
-                st.rerun()
-            elif not entregas_recentes.strip():
-                st.session_state.alerta_form = "⚠️ Preencha o resumo das entregas/gaps recentes para contextualizar a Inteligência Artificial."
-                st.session_state.is_generating = False
-                st.rerun()
-
         # Motor de Geração
         if st.session_state.is_generating:
-            if nome_lider and nome_liderado and entregas_recentes.strip():
-                with st.spinner("A IA está analisando os perfis e criando o roteiro baseado na Metodologia CRIA..."):
+            if entregas_recentes.strip():
+                with st.spinner("A IA está analisando os perfis e criando o roteiro..."):
                     try:
                         roteiro = gerar_roteiro_ia(perfil_lider, nivel_liderado, tempo_casa, perfil_comportamental, entregas_recentes, acordos)
                         st.session_state.roteiro_gerado = roteiro
-                        
-                        # Cria ID de rito e registra log inicial
-                        st.session_state.id_rito = str(uuid.uuid4())
-                        area_lider = DB_LIDERES_METADATA[nome_lider]["area"]
-                        contem_pdi = bool(acordos.strip())
-                        
-                        registrar_log_1a1(
-                            st.session_state.id_rito,
-                            nome_lider,
-                            area_lider,
-                            perfil_lider,
-                            nivel_liderado,
-                            tempo_casa,
-                            perfil_comportamental,
-                            contem_pdi=contem_pdi,
-                            ata_baixada=False
-                        )
+                        registrar_log_1a1(perfil_lider, nivel_liderado, tempo_casa, perfil_comportamental)
                     except Exception as e:
                         st.error(f"Erro na API do Gemini: {e}")
                     finally:
                         st.session_state.is_generating = False
                         st.rerun()
+            else:
+                st.session_state.alerta_form = "⚠️ Preencha pelo menos o resumo das entregas/gaps para a IA ter contexto."
+                st.session_state.is_generating = False
+                st.rerun()
 
-        # Exibição do Roteiro e Geração de PDF
-        if "roteiro_gerado" in st.session_state and nome_lider and nome_liderado:
+        # Exibição em Tela e Gerador de PDF
+        if "roteiro_gerado" in st.session_state:
             st.markdown("---")
             st.subheader("💡 Seu Roteiro de Apoio (Confidencial)")
             st.markdown(st.session_state.roteiro_gerado)
             
             st.markdown("---")
+            
             st.header("2. Registro Oficial (Ata LGPD)")
-            st.info("A ata de resumo abaixo está pronta para download e assinatura física ou digital local.")
+            st.info("Insira os nomes reais abaixo. Eles não vão para a IA, apenas para o PDF local.")
+            
+            col_nome1, col_nome2 = st.columns(2)
+            with col_nome1:nome_lider = st.selectbox("Identifique-se (Líder):", [""] + DB_LIDERES)
+            with col_nome2:nome_liderado = st.selectbox("Selecione o Liderado:", [""] + DB_LIDERADOS)
             
             roteiro_completo = st.session_state.roteiro_gerado
             
@@ -357,122 +242,61 @@ def main():
                     
             texto_para_pdf = '\n'.join(linhas_limpas)
             texto_para_pdf = re.sub(r'\n{3,}', '\n\n', texto_para_pdf).strip()
+                
+            nomes_preenchidos = bool(nome_lider and nome_liderado)
             
-            caminho_pdf = gerar_pdf(nome_lider, nome_liderado, texto_para_pdf)
-            with open(caminho_pdf, "rb") as f:
-                pdf_bytes = f.read()
+            if nomes_preenchidos:
+                caminho_pdf = gerar_pdf(nome_lider, nome_liderado, texto_para_pdf)
+                with open(caminho_pdf, "rb") as f:
+                    pdf_bytes = f.read()
+            else:
+                pdf_bytes = b"" 
                 
-            def ao_baixar_pdf():
-                marcar_ata_baixada(st.session_state.id_rito)
-                computar_pontos_lider()
-                
+            # O Botão de Download agora chama o callback de pontos do Líder selecionado!
             st.download_button(
                 label="Baixar Ata Oficial em PDF & Computar Pontos",
                 data=pdf_bytes,
-                file_name=f"Ata_1a1_{nome_liderado.replace(' ', '_')}.pdf",
+                file_name=f"Ata_1a1_{nome_liderado.replace(' ', '_')}.pdf" if nomes_preenchidos else "Ata_Pendente.pdf",
                 mime="application/pdf",
                 use_container_width=True,
                 type="primary",
-                on_click=ao_baixar_pdf
+                disabled=not nomes_preenchidos,
+                on_click=computar_pontos_lider,
+                args=(nome_lider,) # Passa o nome do líder atual como argumento!
             )
+            
+            if not nomes_preenchidos:
+                st.warning("Selecione o seu nome e o do colaborador nos dropdowns acima para liberar o download e pontuar.")
 
     # ----------------------------------------------------------
-    # 🏆 ABA 2: LIGA DE LÍDERES (Ranking Dinâmico por Drivers)
+    # 🏆 ABA 2: RANKING DE LÍDERES (Nova Seção Gamificada)
     # ----------------------------------------------------------
     with tab_ranking:
         st.header("🏆 Liga de Líderes Clear IT")
-        st.markdown("Quem lidera com clareza vai mais longe. Acompanhe a maturidade e a consistência do time de gestores:")
+        st.markdown("Quem lidera com clareza vai mais longe. Veja os gestores mais engajados nos ritos de 1:1:")
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # Filtro de áreas
-        area_selecionada = st.selectbox("Filtrar ranking por área:", ["Todas", "Tecnologia", "Negócios & Vendas", "RH & Operações"])
-        st.markdown("<br>", unsafe_allow_html=True)
+        # Ordena o ranking do maior para o menor
+        ranking_ordenado = sorted(st.session_state.ranking.items(), key=lambda x: x[1], reverse=True)
 
-        df_telemetria = carregar_dados_telemetria()
-        estats = calcular_estatisticas_lideres(df_telemetria)
-
-        # Filtra e formata a lista de ranking
-        lista_ranking = []
-        for lider, dados in estats.items():
-            if area_selecionada == "Todas" or dados["area"] == area_selecionada:
-                lista_ranking.append((lider, dados))
-
-        # Ordenação por: 1º Ritos totais (Frequência), 2º Taxa de Doc (Critério de desempate)
-        lista_ranking.sort(key=lambda x: (x[1]["ritos"], x[1]["taxa_doc"]), reverse=True)
-
-        # Renderização dos cards do Ranking
-        for posicao, (lider, dados) in enumerate(lista_ranking, start=1):
+        # Renderiza os cards de colocação com medalhas estilizadas
+        for posicao, (lider, sessoes) in enumerate(ranking_ordenado, start=1):
             medalha = "🥇" if posicao == 1 else "🥈" if posicao == 2 else "🥉" if posicao == 3 else "💼"
             
             with st.container(border=True):
-                col_pos, col_nome, col_pts = st.columns([1.2, 4, 2])
+                col_pos, col_nome, col_pts = st.columns([1, 4, 2])
                 with col_pos:
                     st.subheader(f"{medalha} {posicao}º")
                 with col_nome:
-                    st.markdown(f"**{lider}** ({dados['area']})")
-                    st.caption(f"Maturidade: {dados['icone_maturidade']} **{dados['maturidade']}** | Perfil de Gestão: *{dados['perfil'].split('(')[0].strip()}*")
+                    st.markdown(f"**{lider}**")
+                    st.caption("Liderança Estratégica — Clear IT")
                 with col_pts:
-                    st.markdown(f"🎯 **{dados['ritos']} ritos**")
-                    st.caption(f"📄 Doc: {dados['taxa_doc']*100:.0f}% | 💼 PDI: {dados['taxa_pdi']*100:.0f}%")
+                    st.markdown(f"🎯 **{sessoes} reuniões**")
+                    # Sistema simples de XP fictício baseado nas reuniões (ex: cada reunião vale 100 XP)
+                    st.caption(f"{sessoes * 100} total XP")
 
     # ----------------------------------------------------------
-    # 📊 ABA 3: PAINEL ANALÍTICO DO RH (People Analytics)
-    # ----------------------------------------------------------
-    with tab_rh:
-        st.header("📊 Painel de Governança de RH — People Analytics")
-        st.markdown("Consolidação dos principais indicadores de adoção, ritos e feedbacks da Clear IT em tempo real.")
-        st.markdown("---")
-
-        df_telemetria = carregar_dados_telemetria()
-
-        if df_telemetria.empty:
-            st.info("Nenhum dado de telemetria registrado no sistema ainda.")
-        else:
-            total_ritos = len(df_telemetria)
-            total_baixadas = len(df_telemetria[df_telemetria["Ata_Baixada"] == "Sim"])
-            taxa_documentacao = (total_baixadas / total_ritos * 100) if total_ritos > 0 else 0
-            total_pdis = len(df_telemetria[df_telemetria["Contem_PDI"] == "Sim"])
-            taxa_pdi = (total_pdis / total_ritos * 100) if total_ritos > 0 else 0
-            
-            # eNPS Liderança Estimado: Queda de 2026 foi para 45%. Projeção 2027 a partir da taxa de atas (Doc)
-            enps_projetado = 45 + int(taxa_documentacao * 0.35)
-            
-            # Linha de Indicadores Executivos (KPIs Dores 1, 2 e 3)
-            col_m1, col_m2, col_m3, col_m4 = st.columns(4)
-            with col_m1:
-                st.metric("Total de 1:1s / Feedbacks", f"{total_ritos}", help="Frequência total de ritos na plataforma (KPI Dor 1)")
-            with col_m2:
-                st.metric("Taxa de Documentação", f"{taxa_documentacao:.1f}%", help="Porcentagem de atas oficiais baixadas (KPI Dor 2 - Combate à Caixa-Preta)")
-            with col_m3:
-                st.metric("Engajamento PDI / Missões", f"{taxa_pdi:.0f}%", help="Porcentagem de conversas que resultaram em planos de PDI/Missões (KPI Dor 3)")
-            with col_m4:
-                st.metric("Estimativa eNPS 2027", f"{enps_projetado}", delta=f"+{enps_projetado - 45}" if enps_projetado > 45 else None, help="Projeção da evolução de Liderança e Confiança (KPI Dor 2)")
-
-            st.markdown("<br>", unsafe_allow_html=True)
-
-            # Gráficos da Telemetria
-            col_g1, col_g2 = st.columns(2)
-            with col_g1:
-                st.subheader("Adoção por Perfil de Liderança")
-                perfil_counts = df_telemetria["Perfil_Lider"].value_counts()
-                st.bar_chart(perfil_counts)
-                st.caption("Acompanhamento do engajamento de líderes Técnicos, em Transição e de Gestão (KPI Dor 1).")
-                
-            with col_g2:
-                st.subheader("Senioridade dos Liderados")
-                sen_counts = df_telemetria["Senioridade_Liderado"].value_counts()
-                st.bar_chart(sen_counts)
-                st.caption("Distribuição das conversas de 1:1 por nível de senioridade técnica.")
-
-            st.markdown("---")
-            st.subheader("Histórico Recente de Telemetria (Anonimizado - Conformidade LGPD)")
-            st.dataframe(
-                df_telemetria[["Data_Hora", "Area_Lider", "Perfil_Lider", "Senioridade_Liderado", "Contem_PDI", "Ata_Baixada"]].tail(10),
-                use_container_width=True
-            )
-
-    # ----------------------------------------------------------
-    # ABA 4: NOSSO TIME
+    # ABA 2: NOSSO TIME (Cards com Fotos)
     # ----------------------------------------------------------
     with tab_time:
         st.header("Conheça Nosso Time")
@@ -509,7 +333,7 @@ def main():
                 st.markdown("QA & UX Design")
 
     # ----------------------------------------------------------
-    # ABA 5: SOBRE O PROJETO
+    # ABA 3: SOBRE O PROJETO
     # ----------------------------------------------------------
     with tab_sobre:
         st.header("Sobre o Projeto")
