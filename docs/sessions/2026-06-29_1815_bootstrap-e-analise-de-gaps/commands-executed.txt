@@ -1,0 +1,2 @@
+# Nossos comandos foram operados via ferramentas de escrita direta da IDE (Cenário B).
+# Nenhum comando de terminal de alteração foi disparado.

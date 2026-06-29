@@ -1,0 +1,14 @@
+docs/onion-cycles.md
+docs/business-context-lite.md
+docs/technical-context-lite.md
+docs/onion-gap-analysis.md
+.agents/rules/onion.md
+docs/sessions/README.md
+docs/sessions/TEMPLATE.md
+docs/sessions/2026-06-29_1815_bootstrap-e-analise-de-gaps/README.md
+docs/sessions/2026-06-29_1815_bootstrap-e-analise-de-gaps/context.md
+docs/sessions/2026-06-29_1815_bootstrap-e-analise-de-gaps/decisions.md
+docs/sessions/2026-06-29_1815_bootstrap-e-analise-de-gaps/changes.md
+docs/sessions/2026-06-29_1815_bootstrap-e-analise-de-gaps/notes.md
+docs/sessions/2026-06-29_1815_bootstrap-e-analise-de-gaps/files-changed.txt
+docs/sessions/2026-06-29_1815_bootstrap-e-analise-de-gaps/commands-executed.txt
