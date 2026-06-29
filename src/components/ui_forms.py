@@ -13,6 +13,19 @@ def renderizar_formulario_contexto(disabled=False):
         disabled=disabled
     )
     
+    # Nuggets de encorajamento e dicas de postura baseados no perfil do líder
+    if "Técnico" in perfil_lider:
+        st.info("💡 **Dica de Postura (Líder Técnico):** Evite jargões excessivos de RH. Foque em dados objetivos, mas lembre-se: a gestão de pessoas não é um 'trabalho invisível' — ela é o que sustenta a performance técnica do time!")
+        st.caption("✨ *Nugget:* Você não precisa ter todas as respostas. Seu papel é direcionar e dar suporte para o desenvolvimento.")
+    elif "Transição" in perfil_lider:
+        st.info("💡 **Dica de Postura (Líder em Transição):** Conversas complexas exigem inteligência emocional. Use empatia, ouça ativamente e encare os conflitos como oportunidades de alinhamento.")
+        st.caption("✨ *Nugget:* A consistência nos ritos de 1:1 constrói a segurança psicológica e a confiança na sua liderança.")
+    elif "Engajado" in perfil_lider:
+        st.info("💡 **Dica de Postura (Líder Engajado):** Mantenha o foco em carreira. Organize a pauta dividindo o tempo entre sentimentos, conquistas recentes, desafios e os acordos práticos de desenvolvimento.")
+        st.caption("✨ *Nugget:* Seu comprometimento com as pessoas inspira o time. Mantenha as atas ativas para evitar desalinhamentos!")
+        
+    st.markdown("<br>", unsafe_allow_html=True)
+    
     col1, col2, col3 = st.columns(3)
     with col1:
         nivel_liderado = st.selectbox("Senioridade do Liderado:", ["Estagiário", "Júnior", "Pleno", "Sênior", "Especialista"],
@@ -33,4 +46,4 @@ def renderizar_formulario_contexto(disabled=False):
         disabled=disabled
     )
     
-    return perfil_lider, nivel_liderado, tempo_casa, perfil_comportamental, entregas_recentes, acordos
+    return perfil_lider, nivel_liderado, tempo_casa, perfil_comportamental, entregas_recentes, acordos
